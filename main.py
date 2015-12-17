@@ -16,7 +16,7 @@ def timeToInt(formTime):
 def getSchedule():
 	response = urllib2.urlopen('https://ion.tjhsst.edu/api/schedule?format=json')
 	data = json.load(response)
-	blocks = data['results']['day_type']['blocks']
+	blocks = data['results'][0]['day_type']['blocks']
 	periodNames = [len(blocks)]
 	for tmpPd in blocks:
 		periodNames.append(
