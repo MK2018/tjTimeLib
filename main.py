@@ -2,16 +2,20 @@
 
 # (c) 2015 MICHAEL KRAUSE, TJHSST CLASS OF 2018
 
-# Now works with Ion!
-
 import urllib2, json
 import webapp2, logging
 
-def timeToInt(formTime):
-	hour = int(formTime[0:formTime.find(":")])
-	minute = int(formTime[formTime.find(":")+1:])
+def timeToInt(time):
+	hour = int(time[0:time.find(":")])
+	minute = int(time[time.find(":")+1:])
 	if (hour <= 4): hour += 12
 	return (hour*60) + minute
+
+def twelveHourify(time):
+	hour = int(time[0:time.find(":")])
+	minute = str(time[time.find(":")+1:])
+	if(hour > 12): hour = hour%12
+	return "{}:{}".format(hour, minute)
 
 def getSchedule():
 	response = urllib2.urlopen('https://ion.tjhsst.edu/api/schedule?format=json')
@@ -22,8 +26,8 @@ def getSchedule():
 		periodNames.append(
 			{
 				'name': tmpPd['name'],
-				'startForm': tmpPd['start'],
-				'endForm': tmpPd['end'],
+				'startForm': twelveHourify(tmpPd['start']),
+				'endForm': twelveHourify(tmpPd['end']),
 				'startInt': timeToInt(tmpPd['start']),
 				'endInt': timeToInt(tmpPd['end'])
 			}
@@ -37,4 +41,4 @@ class MainPage(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
 	('/', MainPage),
-], debug=True)
+], debug=False)
