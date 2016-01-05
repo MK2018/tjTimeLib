@@ -4,6 +4,7 @@
 
 import urllib2, json
 import webapp2, logging
+from datetime import date
 
 def timeToInt(time):
 	hour = int(time[0:time.find(":")])
@@ -18,9 +19,10 @@ def twelveHourify(time):
 	return "{}:{}".format(hour, minute)
 
 def getSchedule():
-	response = urllib2.urlopen('https://ion.tjhsst.edu/api/schedule?format=json')
+	url = 'https://ion.tjhsst.edu/api/schedule/{}?format=json'.format(date.today().strftime("%Y-%m-%d"))
+	response = urllib2.urlopen(url)
 	data = json.load(response)
-	blocks = data['results'][0]['day_type']['blocks']
+	blocks = data['day_type']['blocks']
 	periodNames = [len(blocks)]
 	for tmpPd in blocks:
 		periodNames.append(
