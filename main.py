@@ -18,6 +18,16 @@ def twelveHourify(time):
 	if(hour > 12): hour = hour%12
 	return "{}:{}".format(hour, minute)
 
+def lunchJLCCombi(sched):
+	for i in range(1, len(sched)-1):
+		if(sched[i]['name']=="(JLC)" and sched[i-1]['name']=="Lunch"):
+			sched[i-1]['name'] = "Lunch + JLC"
+			sched[i-1]['endInt'] = sched[i]['endInt']
+			sched[i-1]['endForm'] = sched[i]['endForm']
+			sched.pop(i)
+			sched[0] = sched[0] - 1
+	return sched
+
 def getSchedule():
 	url = 'https://ion.tjhsst.edu/api/schedule/{}?format=json'.format(date.today().strftime("%Y-%m-%d"))
 	response = urllib2.urlopen(url)
@@ -34,6 +44,7 @@ def getSchedule():
 				'endInt': timeToInt(tmpPd['end'])
 			}
 		)
+	periodNames = lunchJLCCombi(periodNames)
 	return json.dumps(periodNames)
 
 class MainPage(webapp2.RequestHandler):
