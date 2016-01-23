@@ -32,6 +32,8 @@ def getSchedule():
 	url = 'https://ion.tjhsst.edu/api/schedule/{}?format=json'.format(date.today().strftime("%Y-%m-%d"))
 	response = urllib2.urlopen(url)
 	data = json.load(response)
+	if('None' in str(data['date'])):			#Fix for the ever changing Ion API. Grrrrr....
+		return json.dumps([0]);
 	blocks = data['day_type']['blocks']
 	periodNames = [len(blocks)]
 	for tmpPd in blocks:
