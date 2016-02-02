@@ -37,9 +37,14 @@ def getSchedule():
 	blocks = data['day_type']['blocks']
 	periodNames = [len(blocks)]
 	for tmpPd in blocks:
+		name = tmpPd['name']
+		if("<br>" in name):
+			name = name.replace("<br>", " ")
+		if(len(name)>20):
+			name = name[0:18] + "..."
 		periodNames.append(
 			{
-				'name': tmpPd['name'],
+				'name': name,
 				'startForm': twelveHourify(tmpPd['start']),
 				'endForm': twelveHourify(tmpPd['end']),
 				'startInt': timeToInt(tmpPd['start']),
